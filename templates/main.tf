@@ -11,22 +11,23 @@ provider "aws" {
 data "aws_availability_zones" "all" {}
 
 resource "aws_security_group" "instance" {
-  name = "-sg"
+  name = "demo-iac-tdd-dev-sg"
   ingress {
     from_port = 0
     to_port = 0
     protocol = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-//  egress {
-//    from_port = 0
-//    to_port = 0
-//    protocol = "-1"
-//    cidr_blocks = ["0.0.0.0/0"]
-//  }
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 resource "aws_launch_configuration" "example" {
+  name = "demo-iac-tdd-dev-launch-configuration"
   image_id               = var.amis
   instance_type          = var.instance_type
   security_groups        = [aws_security_group.instance.id]
@@ -46,13 +47,13 @@ resource "aws_autoscaling_group" "example" {
   health_check_type = "ELB"
   tag {
     key = "Name"
-    value = "randomNAme_-asg"
+    value = "demo-iac-tdd-dev-asg"
     propagate_at_launch = true
   }
 }
 
 resource "aws_security_group" "elb" {
-  name = "randomNAme_-elb"
+  name = "demo-iac-tdd-dev-elb"
   egress {
     from_port = 0
     to_port = 0
@@ -68,7 +69,7 @@ resource "aws_security_group" "elb" {
 }
 
 resource "aws_elb" "example" {
-  name = "randomNAme_-asg"
+  name = "demo-iac-tdd-dev-asg"
   security_groups = [aws_security_group.elb.id]
   availability_zones = data.aws_availability_zones.all.names
   health_check {

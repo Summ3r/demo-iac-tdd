@@ -20,12 +20,12 @@ func TestTerraformAwsSimpleWebArch(t *testing.T) {
 	// always destroy after test is complete
 	defer terraform.Destroy(t, terraformOptions)
 
-	// create resources via tf
+	// run tf apply
 	terraform.InitAndApply(t, terraformOptions)
 
 	// validate
 	elbDnsName := terraform.Output(t, terraformOptions, "elb_dns_name")
-	url := fmt.Sprintf("http://%s:80", elbDnsName)
+	url := fmt.Sprintf("http://%s", elbDnsName)
 	httpHelper.HttpGetWithRetry(t, url, nil, 200, "Hello, HashiTalks", 30, 5*time.Second)
 }
 
