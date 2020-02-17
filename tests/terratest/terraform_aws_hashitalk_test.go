@@ -18,7 +18,7 @@ func TestTerraformAwsSimpleWebArch(t *testing.T) {
 
 	// where are my tf files
 	terraformOptions := &terraform.Options{
-		TerraformDir: "../../infra",
+		TerraformDir: "../../templates",
 	}
 
 	// always destroy after test is complete
