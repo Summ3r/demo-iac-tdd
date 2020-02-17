@@ -17,15 +17,7 @@ resource "aws_instance" "web" {
   vpc_security_group_ids = [aws_security_group.instance.id]
   source_dest_check = false
   instance_type = var.instance_type
-  // TODO this is a dup?
-  user_data = <<-EOF
-              #!/bin/bash
-              yum update -y
-              yum install httpd -y
-              cd /var/www/html
-              echo "Hello, HashiTalks" > index.html
-              service httpd start
-              EOF
+  user_data = file("scripts/httpd-setup.sh")
   tags = {
     Name = format("hashitalk-iac-tdd-%03d", count.index + 1)
   }
@@ -53,14 +45,7 @@ resource "aws_launch_configuration" "example" {
   instance_type          = var.instance_type
   security_groups        = [aws_security_group.instance.id]
   key_name               = var.ssh_key_name
-  user_data = <<-EOF
-              #!/bin/bash
-              yum update -y
-              yum install httpd -y
-              cd /var/www/html
-              echo "Hello, HashiTalks" > index.html
-              service httpd start
-              EOF
+  user_data = file("scripts/httpd-setup.sh")
   lifecycle {
     create_before_destroy = true
   }
