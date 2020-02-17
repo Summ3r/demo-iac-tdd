@@ -20,3 +20,4 @@
 
 templates/.terraform/*
 templates/*tfstate*
+templates/plan*
