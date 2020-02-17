@@ -40,7 +40,6 @@ resource "aws_security_group" "instance" {
 }
 
 resource "aws_launch_configuration" "example" {
-  //image_id               = lookup(var.amis,var.region)
   image_id               = var.amis
   instance_type          = var.instance_type
   security_groups        = [aws_security_group.instance.id]
@@ -50,12 +49,10 @@ resource "aws_launch_configuration" "example" {
     create_before_destroy = true
   }
 }
-## Creating AutoScaling Group
+
 resource "aws_autoscaling_group" "example" {
   launch_configuration = aws_launch_configuration.example.id
-  // availability_zones = data.aws_availability_zones.all.names TF12 syntax change - fix later TODO
-  //availability_zones = ["eu-west-2a", "eu-west-2b", "eu-west-2c"]
-  availability_zones = ["eu-west-2a"]
+  availability_zones = data.aws_availability_zones.all.names
   min_size = 1
   max_size = 1
   load_balancers = [
@@ -87,9 +84,7 @@ resource "aws_security_group" "elb" {
 resource "aws_elb" "example" {
   name = "hashitalk-iac-tdd-asg"
   security_groups = [aws_security_group.elb.id]
-  // availability_zones = [data.aws_availability_zones.all.names] TODO TF12 sytanx change
-  //availability_zones = ["eu-west-2a", "eu-west-2b", "eu-west-2c"]
-  availability_zones = ["eu-west-2a"]
+  availability_zones = data.aws_availability_zones.all.names
   health_check {
     healthy_threshold = 2
     unhealthy_threshold = 2
